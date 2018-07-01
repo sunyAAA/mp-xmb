@@ -55,8 +55,8 @@ export default {
     return {
       startTime: "",
       endTime: "",
-      name: "每天跑步1小时",
-      targetValue: "坚持30天",
+      name: "",
+      targetValue: "",
       curValue: "",
       targetNum: 1,
       targetMoney: 0,

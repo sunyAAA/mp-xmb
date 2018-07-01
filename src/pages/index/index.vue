@@ -61,9 +61,11 @@ export default {
 	onLoad(options){
 		if(options.share){
 			var tid = options.tid
-			wx.navigateTo({
-				url:'../../pages/sharePage/main?tid='+tid
-			});
+			setTimeout(()=>{
+				wx.navigateTo({
+					url:'../../pages/sharePage/main?tid='+tid
+				});
+			},800)
 		}
 	},
   mounted() {
