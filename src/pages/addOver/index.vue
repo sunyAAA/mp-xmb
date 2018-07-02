@@ -7,6 +7,7 @@
             <p>{{userName}}</p>
         </div>
         <div class="blank"></div>
+        <scard  :data='data'></scard>
         <div v-if='isSelf'>
             <div class="overTk self">
                 <div class="over-head">
@@ -59,7 +60,7 @@
 <script>
 import { _getU,upImgs, showSucc,strToArray,msg } from '../../utils';
 import {getTargetDetail,saveTargetStatus,voteTarget} from '../../api'
-import dcard from '../../components/dcard'
+import dcard from '../../components/card'
 const shareBg = require('../../../static/shareBg.jpg')
 export default {
     components:{dcard},
@@ -73,7 +74,8 @@ export default {
             imgList:[],
             isSelf:false,
             oss:this.$oss,
-            isWacther:false
+            isWacther:false,
+            data:null
         }
     },
     onLoad(options){
@@ -91,6 +93,7 @@ export default {
             var d = res.data
             this.imgList = strToArray(d.data.images)
             if(d.code == 1 ){
+                this.data = d.data
                 this.headUrl = d.data.avatar;
                 this.userName = d.data.name
                 this.active = d.data.sucStr == '成功'?1:0;

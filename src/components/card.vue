@@ -40,7 +40,7 @@ export default {
                 hasDay: getLeftDays(this.data.beginTime),
                 leftDay:getRightDays(this.data.endTime),
                 url:this.data.avatar,
-                nickname:this.data.user.nickname
+                nickname:this.data.user?this.data.user.nickname:''
             }
         }
     },

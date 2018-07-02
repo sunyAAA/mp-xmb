@@ -263,5 +263,5 @@ export function showModel(title){
 }
 
 export function strToArray(str){
-	return !str?[]:str.indexOf(',')>0? str.spilit(','):[str]
+	return !str?[]:str.indexOf(',')>0? str.split(','):[str]
 }
