@@ -11,7 +11,7 @@ export function formatTime(date) {
 	// const minute = date.getMinutes()
 	// const second = date.getSeconds()
 
-	const t1 = `${year}年${month}月${day}`
+	const t1 = `${year}年${month}月${day}日`
 	// const t2 = [hour, minute, second].map(formatNumber).join(':')
 
 	return `${t1}`
@@ -156,7 +156,9 @@ export function upImgs(num,result) {  // num:上传的数量   result:接受返�
 			wx.request({
 				url: config.host + '/api/imgupload/getImgPolicy',  // 签名
 				success: oss => {
-					for(let item of tempFilePaths){
+					_loading('正在上传')
+					for(var i =0 ; i <num;i++){
+						var item = tempFilePaths[i]
 						wx.uploadFile({
 							url: config.host + '/api/imgupload/imgUpload',   //上传
 							filePath: item, 
@@ -169,6 +171,7 @@ export function upImgs(num,result) {  // num:上传的数量   result:接受返�
 							},
 							success: res => {
 								result.push('/'+ JSON.parse(res.data).data);
+								if(i == num){_loading()}
 							}
 						});
 					}
@@ -248,12 +251,11 @@ export function showModel(title){
 	return new Promise((resolve,reject)=>{
 		wx.showModal({
 			title: title,
-			content: '这是一个模态弹窗',
 			success: function(res) {
 			  if (res.confirm) {
 				resolve(true)
 			  } else if (res.cancel) {
-				resolve(true)
+				resolve(null)
 			  }
 			}
 		  })

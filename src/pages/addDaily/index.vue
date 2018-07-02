@@ -5,16 +5,15 @@
                 <img :src="headUrl" alt="">
             </div>
             <p>每天十一点睡觉</p>
-            <span class="edit" @click='edit' v-show='isSelf'>编辑</span>
         </div>
-        <div class="add-box" v-show="!isEdit && isSelf">
+        <div class="add-box" v-show="isSelf">
             <p>{{today}}</p>
-            <div class="addBtn" @click='goEdit'>
+            <div class="addBtn"  @click='goEdit'>
                 <img src="../../static/icon/icon/dptp3x.png" alt="">
             </div>
         </div>
         <div class="item-box" v-for='(item,index) in renderList' :key="index">
-            <span class="delete" v-show='isEdit' @click='removeDaily(item.logId)'>
+            <span class="delete" v-show="isSelf"  @click='removeDaily(item.logId)'>
                 删除
             </span>
             <div class="daily-box">
@@ -31,15 +30,13 @@
 </template>
 
 <script>
-import { _getU, dateForm, formatTime, showSucc } from "../../utils";
+import { _getU, dateForm, formatTime, showSucc,showModel } from "../../utils";
 import { getDailyByTid, getTargetDetail, removeLogById } from "../../api";
 
 export default {
   data() {
     return {
       headUrl: "",
-      isEdit: false,
-      selectAll: false,
       isSelf: false,
       DailyList: [],
       oss: this.$oss
@@ -49,6 +46,7 @@ export default {
     this.uid = options.uid;
     this.tid = options.tid;
     this.self = wx.getStorageSync("userId");
+    this.isSelf = this.uid == this.self?true:false
   },
   onShow() {
     this.getDailyList();
@@ -74,9 +72,6 @@ export default {
         var d = res.data;
         if (d.code == 1) {
           this.headUrl = d.data.avatar;
-          if (this.uid == d.data.userId) {
-            this.isSelf = true;
-          }
         } else {
           msg("数据请求失败~！");
         }
@@ -191,6 +186,7 @@ export default {
     position: relative;
     font-size: 14px;
     transform: translate(10%, 0);
+    color #333
 
     .time {
         margin-bottom: 10px;
@@ -199,6 +195,11 @@ export default {
     .text {
         max-height: 80px;
         padding: 10px 20px;
+        overflow:hidden;
+        text-overflow:ellipsis; 
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
         overflow: hidden;
     }
 }
@@ -224,10 +225,12 @@ export default {
 
 .delete {
     position: absolute;
-    left: 20px;
-    top: -30px;
+    right : 10px;
+    padding 10px
     font-size: 14px;
     color: #A3CEFB;
+    z-index 999
+    color #333
 }
 
 .img-box {

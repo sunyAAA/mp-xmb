@@ -66,6 +66,6 @@ export function voteTarget(params){
     return fly.post('/api/userTarget/voteTarget',qs.stringify(params))
 }
 
-export function getMyWatch(status,pageSize,pageNum){
+export function getMyWatch(pageSize,pageNum,status){
     return fly.get('/api/userTarget/getHeTarget',qs.stringify({status,pageSize,pageNum}))
 }

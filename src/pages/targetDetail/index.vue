@@ -32,16 +32,18 @@
                 <p v-if='status>3' class="friends-check">{{item.check?'成功':'失败'}}</p>
             </div>
         </div>
-        <div v-if='isLogin'>
+        <div>
+                <div>
                 <button class="addDaily" @click='addDaily'>心情日记</button>
-                <div class="btn-group"  v-show="status == 2">
+                <div class="addIcon"></div>
+                </div>
+                <div class="btn-group"  v-show="status == 2 && isSelf">
                     <button  @click="goOver">发起结束</button>
                     <button open-type="share" @click='share'>邀请好友成为我的监督人</button>
                 </div>
                     <button class="shareBtn" @click='goOver' v-show='status == 3'>投票中</button>
-                <button class="shareBtn" v-show="status == 4">分享我的成就</button>
+                <button class="shareBtn" v-show="status == 4 && isSelf">分享我的成就</button>
         </div>
-        <login-box v-else></login-box>
     </div>
 </template>
 
@@ -55,34 +57,31 @@ export default {
   data() {
     return {
         data:{},
-        isLogin:true,
         status:null,
         friends:[],
-        status:null
+        status:null,
+        isSelf:true
     };
   },
   onLoad(options){
       this.tid = options.tid
   },
   mounted() {
-    var t = wx.getStorageSync('_token');
-    if(t){
         this.headUrl = _getU().avatarUrl;
         this.getTargetDetail()
-    }else{
-        this.isLogin = false
-    }
   },
   methods: {
     getTargetDetail(){
         if(!this.tid){
             msg('目标信息获取失败，请稍后再试')
         }else{
+            var userId = wx.getStorageSync('userId');
             getTargetDetail(this.tid).then(res => {
                 this.data = res.data.data;
                 this.data.time = fromartTargetDate(this.data.beginTime,this.data.endTime)
                 this.status = this.data.status;
-                this.friends = this.data.list
+                this.friends = this.data.relationList
+                this.isSelf = userId == res.data.data.userId?true:false
             })
         }
     },
@@ -122,6 +121,14 @@ export default {
         text-align: left ;
         padding-left 40px;
         line-height 20px
+        max-height: 60px;
+        padding: 10px 20px;
+        overflow:hidden;
+        text-overflow:ellipsis; 
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
     }
 }
 .friends-box
@@ -137,6 +144,8 @@ export default {
     width 85%
     margin 0 auto
     text-align left
+    height 45px
+    line-height 45px
     border 1px solid #eee
     font-size 14px
     margin-top 20px

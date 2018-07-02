@@ -27,14 +27,14 @@
             </div>
             <div class="bottom-btn">
                 <button @click='save'>保存凭证</button>
-                <button open-type='share' class="add-btn" @click="sendOver">向好友发起结束</button>
+                <button v-show='active' open-type='share' class="add-btn" @click="sendOver">向好友发起结束</button>
             </div>
         </div>
         <div v-else>
             <div class="overTk over">
                 <div class="over-head">
                     <div>结束凭证</div>
-                    <div class="button-group">
+                    <div class="button-group" v-show='isWacther'>
                         <button :class="{active: overActive==1}" >成功</button>
                         <button :class="{active: overActive==0}" >失败</button>
                     </div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <p class="friends-desc">你的好友好发布了结束的小目标，快来看看是否完成了小目标吧。</p>
-            <div  class="btn-group">
+            <div  class="btn-box">
                 <button @click='vote(1)'>成功</button>
                 <button @click='vote(2)'>失败</button>
             </div>
@@ -72,23 +72,33 @@ export default {
             loginType:2,
             imgList:[],
             isSelf:false,
-            oss:this.$oss
+            oss:this.$oss,
+            isWacther:false
         }
     },
     onLoad(options){
         this.tid = options.tid;
         this.userId = options.uid
     },
+    onShow(){
+        this.isWacther = false
+    },
     mounted(){
         var self = wx.getStorageSync('userId');
         if(self == this.userId){this.isSelf=true}
         getTargetDetail(this.tid).then(res=>{
+            this.isWacther = false
             var d = res.data
             this.imgList = strToArray(d.data.images)
-            if(d.code == 1){
+            if(d.code == 1 ){
                 this.headUrl = d.data.avatar;
                 this.userName = d.data.name
-                this.active = d.data.sucStr == '成功'?1:0
+                this.active = d.data.sucStr == '成功'?1:0;
+            }
+            for(var item of d.data.relationList){
+                if(item.userId == self){
+                    this.isWacther = true
+                }
             }
         })
     },
@@ -105,7 +115,7 @@ export default {
             upImgs(2,this.imgList)
         },
         save(){
-            if(!this.active){msg('请填写自我评价');return}
+            if(this.active === null){msg('请填写自我评价');return}
             var params={
                 targetId:this.tid,
                 images:this.renderList.join(','),
@@ -121,16 +131,16 @@ export default {
         vote(status){
             var params = {
                 targetId : this.tid,
-                status
+                status:status
             }
             voteTarget(params).then(res=>{
                 var d= res.data;
                 if(d.code == 1){
                     showSucc('投票成功');
                     setTimeout(()=>{
-                        wx.redirectTo({
-                            url: '../../pages/index/main'
-                            })
+                        wx.navigateBack({
+                          delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+                        });
                     },800)
                 }
             })
@@ -139,7 +149,7 @@ export default {
     onShareAppMessage: function() {
         return {
             title: '先定一个小目标，砥砺奋进一个亿',
-            path: "/pages/index/main?tid="+this.tid+"over=1",
+            path: "/pages/index/main?tid="+this.tid+"&over=1",
             imageUrl:shareBg
         };
   }
@@ -195,7 +205,7 @@ export default {
         height 200px
     .img-box
         width 120px
-        height 140px
+        height 120px
         overflow hidden
         display inline-block
         margin 0 20px
@@ -214,13 +224,22 @@ export default {
 .friends-desc
     font-size 12px
     text-align center
-.bottom-btn
-    display  flex
-    padding 0 20px
-    button
-        flex 1
-        margin-right 10px
-        height 40px
-        line-height 40px
-        font-size 14px
+.btn-box {
+    padding: 20px 30px;
+
+    &>button {
+        display: inline-block;
+        width: 100px;
+        font-size: 14px;
+
+
+        &:nth-child(2) {
+            float: right;
+        }
+        &:nth-child(1) {
+            background #479EF8
+            color #fff
+        }
+    }
+}
 </style>
