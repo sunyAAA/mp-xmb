@@ -59,21 +59,31 @@ export default {
     };
 	},
 	onLoad(options){
+		var tid = options.tid
 		if(options.share){
-			var tid = options.tid
 			setTimeout(()=>{
 				wx.navigateTo({
 					url:'../../pages/sharePage/main?tid='+tid
 				});
 			},800)
+		}else if(options.over){
+			setTimeout(()=>{
+				wx.navigateTo({
+					url:'../../pages/addOver/main?tid='+tid
+				});
+			},800)
 		}
 	},
-  mounted() {
+  onShow() {
+		if(this.isLogin){
+			wx.showTabBar();
+			this.getIndexDate()
+			return
+		}
     _login(res => {
       if (res) {
         this.isLogin = true;
         this.userInfo = res;
-        this.score = 66;
 				wx.showTabBar();
 				this.getIndexDate()
       }
@@ -88,7 +98,6 @@ export default {
           this.isLogin = true;
           this.userInfo = res;
           wx.setStorageSync("userInfo", res);
-          this.score = 66;
 					wx.showTabBar();
 					this.getIndexDate()
         }
@@ -103,7 +112,7 @@ export default {
 					}
 					this.dayDown = getLeftDays(d.beginTime);
 					var per = (new Date().getTime() - d.beginTime)/(d.endTime - d.beginTime) 
-					this.score = parseInt(per)>0?parseInt(per):0
+					this.score = parseInt(per*100)>0?parseInt(per*100):0
 					this.targetName = d.name;
 					this.targetDayDown ="倒计时："+ getRightDays(d.endTime)+"天";
 				}

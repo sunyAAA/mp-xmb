@@ -38,11 +38,11 @@ export function getTargetDetail(tid){
     return fly.get('/api/userTarget/getTargetById?targetId='+tid)
 }
 
-export function getDaelyByTid(tid,pageSize,pageNum){
+export function getDailyByTid(tid,pageSize,pageNum){
     return fly.get('/api/userTargetLog/getMyTargetLog',qs.stringify({targetId:tid,pageNum,pageSize}))
 }
 
-export function addNewDaely(params){
+export function addNewDaily(params){
     return fly.post('/api/userTargetLog/addTargetLog',qs.stringify(params))
 }
 

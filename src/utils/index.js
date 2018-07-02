@@ -69,6 +69,8 @@ export function _login(cb) {
 								_loading()
 								wx.showTabBar()
 								return cb && cb(res.userInfo, null);
+							}else{
+								_loading()
 							}
 						}).catch(err => {
 							console.log(err)
@@ -110,6 +112,8 @@ export function loginByUser(userInfo, cb) {
 					_loading()
 					wx.showTabBar()
 					return cb && cb(userInfo, null);
+				}else{
+					_loading()
 				}
 			}).catch((err) => {
 				console.log(err)
@@ -164,16 +168,14 @@ export function upImgs(num,result) {  // num:上传的数量   result:接受返�
 								OSSAccessKeyId:res.accessid
 							},
 							success: res => {
-								result.push(config.ossroot +'/'+ JSON.parse(res.data).data);
+								result.push('/'+ JSON.parse(res.data).data);
 							}
 						});
 					}
 
 				},
 			  });
-
 		},
-
 	});
 }
 
@@ -240,4 +242,24 @@ export function dateForm (timestamp, formats) {
 			s: second
 		})[matches];
 	});
+}
+
+export function showModel(title){
+	return new Promise((resolve,reject)=>{
+		wx.showModal({
+			title: title,
+			content: '这是一个模态弹窗',
+			success: function(res) {
+			  if (res.confirm) {
+				resolve(true)
+			  } else if (res.cancel) {
+				resolve(true)
+			  }
+			}
+		  })
+	})
+}
+
+export function strToArray(str){
+	return !str?[]:str.indexOf(',')>0? str.spilit(','):[str]
 }

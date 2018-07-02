@@ -18,7 +18,7 @@
                 </div>
                 <div class="choose-img-box">
                     <div class="img-box" v-for="(item,index) in renderList" :key="index">
-                        <img :src="item" alt="">
+                        <img :src="oss + item" alt="">
                     </div>
                 </div>
                 <div class="icon-box" @click='upLoad'>
@@ -27,7 +27,7 @@
             </div>
             <div class="bottom-btn">
                 <button @click='save'>保存凭证</button>
-                <button class="add-btn">向好友发起结束</button>
+                <button open-type='share' class="add-btn" @click="sendOver">向好友发起结束</button>
             </div>
         </div>
         <div v-else>
@@ -35,13 +35,13 @@
                 <div class="over-head">
                     <div>结束凭证</div>
                     <div class="button-group">
-                        <button :class="{active: overActive==1}" @click="changeStatus(1)">成功</button>
-                        <button :class="{active: overActive==0}" @click="changeStatus(0)">失败</button>
+                        <button :class="{active: overActive==1}" >成功</button>
+                        <button :class="{active: overActive==0}" >失败</button>
                     </div>
                 </div>
                 <div class="choose-img-box">
-                    <div class="img-box">
-                        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530181353793&di=3e8c04b2be23fcc5847ccfb7c276a4e7&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia.com%2FuploadImages%2F2014%2F064%2F21739CV5LP64.jpg" alt="">
+                    <div class="img-box" v-for="(item,index) in renderList" :key="index">
+                        <img :src="oss + item" alt="">
                     </div>
                 </div>
             </div>
@@ -57,11 +57,12 @@
 </template>
 
 <script>
-import { _getU,upImgs, showSucc } from '../../utils';
+import { _getU,upImgs, showSucc,strToArray,msg } from '../../utils';
 import {getTargetDetail,saveTargetStatus,voteTarget} from '../../api'
-import zcard from '../../components/card'
+import dcard from '../../components/dcard'
+const shareBg = require('../../../static/shareBg.jpg')
 export default {
-    components:{zcard},
+    components:{dcard},
     data(){
         return{
             headUrl:'',
@@ -70,7 +71,8 @@ export default {
             overActive:1,
             loginType:2,
             imgList:[],
-            isSelf:false
+            isSelf:false,
+            oss:this.$oss
         }
     },
     onLoad(options){
@@ -82,9 +84,11 @@ export default {
         if(self == this.userId){this.isSelf=true}
         getTargetDetail(this.tid).then(res=>{
             var d = res.data
+            this.imgList = strToArray(d.data.images)
             if(d.code == 1){
                 this.headUrl = d.data.avatar;
                 this.userName = d.data.name
+                this.active = d.data.sucStr == '成功'?1:0
             }
         })
     },
@@ -101,6 +105,7 @@ export default {
             upImgs(2,this.imgList)
         },
         save(){
+            if(!this.active){msg('请填写自我评价');return}
             var params={
                 targetId:this.tid,
                 images:this.renderList.join(','),
@@ -129,8 +134,15 @@ export default {
                     },800)
                 }
             })
-        }
-    }
+        }  
+    },
+    onShareAppMessage: function() {
+        return {
+            title: '先定一个小目标，砥砺奋进一个亿',
+            path: "/pages/index/main?tid="+this.tid+"over=1",
+            imageUrl:shareBg
+        };
+  }
 }
 </script>
 

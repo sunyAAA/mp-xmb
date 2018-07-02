@@ -28,16 +28,17 @@
                 <div class="img-box-m" >
                     <img :src="item.avatar" alt="">
                 </div>
-                <p>{{item.name}}</p>
-                <p class="friends-check">{{item.check?'成功':'失败'}}</p>
+                <p class="name">{{item.nickname}}</p>
+                <p v-if='status>3' class="friends-check">{{item.check?'成功':'失败'}}</p>
             </div>
         </div>
         <div v-if='isLogin'>
-                <button class="addDaely" @click='addDaely'>心情日记</button>
+                <button class="addDaily" @click='addDaily'>心情日记</button>
                 <div class="btn-group"  v-show="status == 2">
                     <button  @click="goOver">发起结束</button>
-                    <button open-type="share" @click='share'>邀请好友前来监督</button>
+                    <button open-type="share" @click='share'>邀请好友成为我的监督人</button>
                 </div>
+                    <button class="shareBtn" @click='goOver' v-show='status == 3'>投票中</button>
                 <button class="shareBtn" v-show="status == 4">分享我的成就</button>
         </div>
         <login-box v-else></login-box>
@@ -48,13 +49,15 @@
 import {_getU,msg,fromartTargetDate} from '../../utils/index.js'
 import loginBox from '../../components/loginBox'
 import {getTargetDetail} from '../../api'
-
+const shareBg = require('../../../static/shareBg.jpg')
 export default {
   components:{loginBox},
   data() {
     return {
         data:{},
         isLogin:true,
+        status:null,
+        friends:[],
         status:null
     };
   },
@@ -65,11 +68,6 @@ export default {
     var t = wx.getStorageSync('_token');
     if(t){
         this.headUrl = _getU().avatarUrl;
-        this.friends=[
-            {avatar:this.headUrl,name:'小猪',check:false},
-            {avatar:this.headUrl,name:'小皮',check:false},
-            {avatar:this.headUrl,name:'小明明',check:false},
-        ]
         this.getTargetDetail()
     }else{
         this.isLogin = false
@@ -83,12 +81,13 @@ export default {
             getTargetDetail(this.tid).then(res => {
                 this.data = res.data.data;
                 this.data.time = fromartTargetDate(this.data.beginTime,this.data.endTime)
-                this.status = this.data.status
+                this.status = this.data.status;
+                this.friends = this.data.list
             })
         }
     },
-    addDaely(){
-        wx.navigateTo({ url: '../../pages/addDaely/main?uid='+this.data.userId+'&tid='+this.data.targetId});
+    addDaily(){
+        wx.navigateTo({ url: '../../pages/addDaily/main?uid='+this.data.userId+'&tid='+this.data.targetId});
     },
     goOver(){
         wx.navigateTo({ url: '../../pages/addOver/main?tid='+this.tid+"&uid="+this.data.userId});
@@ -98,7 +97,7 @@ export default {
     return {
       title: '先定一个小目标，砥砺奋进一个亿',
       path: "/pages/index/main?tid="+this.tid+"&share=1",
-    //   query:'tid='+this.tid
+      imageUrl:shareBg
     };
   }
 };
@@ -134,7 +133,7 @@ export default {
             color black
             font-size 14px
             text-align center
-.addDaely
+.addDaily
     width 85%
     margin 0 auto
     text-align left
@@ -168,5 +167,10 @@ export default {
         line-height 40px
         color:#fff
         background #479EF8
+.name
+    max-width 100px
+    overflow hidden
+    text-overflow: ellipsis;
+    white-space: nowrap;
 </style>
 

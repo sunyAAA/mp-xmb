@@ -55,8 +55,8 @@ export default {
     return {
       startTime: "",
       endTime: "",
-      name: "",
-      targetValue: "",
+      name: "吃二十碗饭",
+      targetValue: "二十",
       curValue: "",
       targetNum: 1,
       targetMoney: 0,
