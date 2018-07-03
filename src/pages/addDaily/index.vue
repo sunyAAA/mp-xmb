@@ -4,7 +4,7 @@
             <div class="img-box-l">
                 <img :src="headUrl" alt="">
             </div>
-            <p>每天十一点睡觉</p>
+            <p>{{name}}</p>
         </div>
         <div class="add-box" v-show="isSelf">
             <p>{{today}}</p>
@@ -37,6 +37,7 @@ export default {
   data() {
     return {
       headUrl: "",
+      name:'',
       isSelf: false,
       DailyList: [],
       oss: this.$oss
@@ -72,6 +73,7 @@ export default {
         var d = res.data;
         if (d.code == 1) {
           this.headUrl = d.data.avatar;
+          this.name = d.data.name
         } else {
           msg("数据请求失败~！");
         }
@@ -100,9 +102,6 @@ export default {
           });
         }
       });
-    },
-    checkboxChange(e) {
-      console.log("checkbox发生change事件，携带value值为：", e.mp.detail.value);
     },
     edit() {
       this.isEdit = !this.isEdit;

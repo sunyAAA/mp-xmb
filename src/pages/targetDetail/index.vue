@@ -112,6 +112,7 @@ export default {
     padding: 10px 10px;
     border-bottom 1px solid #eee
     margin 0 20px
+    align-items center
     .label {
         flex 0  0 95px
     }   

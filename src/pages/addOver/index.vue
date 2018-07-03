@@ -26,7 +26,7 @@
                     <img src="../../static/icon/icon/dptp3x.png" alt="">
                 </div>
             </div>
-            <div class="bottom-btn">
+            <div class="btn-box">
                 <button @click='save'>保存凭证</button>
                 <button v-show='active' open-type='share' class="add-btn" @click="sendOver">向好友发起结束</button>
             </div>
@@ -47,9 +47,12 @@
                 </div>
             </div>
             <p class="friends-desc">你的好友好发布了结束的小目标，快来看看是否完成了小目标吧。</p>
-            <div  class="btn-box">
+            <div  class="btn-box" v-show='!watcherResult'>
                 <button @click='vote(1)'>成功</button>
                 <button @click='vote(2)'>失败</button>
+            </div>
+            <div class="watcher-result">
+                您的投票结果是：<span>{{watcherResult}}</span>
             </div>
         </div>
 
@@ -75,6 +78,7 @@ export default {
             isSelf:false,
             oss:this.$oss,
             isWacther:false,
+            watcherResult:null,
             data:null
         }
     },
@@ -83,13 +87,13 @@ export default {
         this.userId = options.uid
     },
     onShow(){
-        this.isWacther = false
+        this.isWacther = false;
+        this.isSelf=false
     },
     mounted(){
         var self = wx.getStorageSync('userId');
         if(self == this.userId){this.isSelf=true}
         getTargetDetail(this.tid).then(res=>{
-            this.isWacther = false
             var d = res.data
             this.imgList = strToArray(d.data.images)
             if(d.code == 1 ){
@@ -101,6 +105,8 @@ export default {
             for(var item of d.data.relationList){
                 if(item.userId == self){
                     this.isWacther = true
+                    this.watcherResult = item.targetResult?item.targetResult ==1 ? '成功':'失败':null
+                    return
                 }
             }
         })
@@ -245,4 +251,10 @@ export default {
         }
     }
 }
+.watcher-result
+    height 100px
+    line-height 100px
+    text-align center
+    font-size 16px
+
 </style>
