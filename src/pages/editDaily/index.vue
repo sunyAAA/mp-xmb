@@ -6,7 +6,7 @@
                   <img v-for="(item,index) in renderUrl"  :key="index"
                      class='item' :src="oss+item" alt="">
              </div>
-            <div class="icon-box" @click.stop='upLoadImg'>
+            <div class="icon-box-i" @click.stop='upLoadImg'>
                 <img src="../../static/icon/icon/dptp3x.png" alt="">
             </div>
          </div>
@@ -84,11 +84,14 @@ export default {
         margin 0 20px
         margin-top 20px
         border 1px solid #eee
-        .icon-box
+        .icon-box-i
             position absolute
             bottom 10px
             right 10px
             z-index 999 class='item'
+            img
+                width 50px
+                height 50px
         img.item
             width 90px
             height 90px

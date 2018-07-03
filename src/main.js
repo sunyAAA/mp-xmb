@@ -20,13 +20,13 @@ export default {
     },
     tabBar: {
       "selectedColor": "#A3CEFB",
-      "borderStyle": 'white',
+      "borderStyle": 'black',
       "list": [
         {
           "text": "发起",
           "pagePath": "pages/index/main",
           "iconPath": "static/tab/start.png",
-          "selectedIconPath": "static/tab/statrActive.png"
+          "selectedIconPath": "static/tab/startActive.png"
         },
         {
           "text": "我的目标",

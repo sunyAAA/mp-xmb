@@ -10,6 +10,7 @@
             <p>{{today}}</p>
             <div class="addBtn"  @click='goEdit'>
                 <img src="../../static/icon/icon/dptp3x.png" alt="">
+                <p class="text">添加日记</p>
             </div>
         </div>
         <div class="item-box" v-for='(item,index) in renderList' :key="index">
@@ -165,26 +166,38 @@ export default {
     .addBtn {
         height: 98px;
         overflow: hidden;
-        text-align: center;
+        line-height 98px
+        text-align: left ;
         border: 1px solid #eee;
+        position relative
+        .text{
+          height 98px
+          line-height 98px
+          text-align center
+          font-size 16px
+          padding-right 24px
+          color #999
+        } 
 
         img {
-            width: 78px;
-            height: 78px;
-            margin: 10px auto;
+            position absolute
+            left 0
+            width: 48px;
+            height: 48px;
+            margin 20px 0;
+            padding-left : 40px;
             object-fit: contain;
         }
     }
 }
 
 .daily-box {
-    background: #A3CEFB;
+    border  1px solid #eee
+    margin 0 auto
     padding: 10px;
     flex: 0 0 70%;
-    margin-bottom: 20px;
     position: relative;
     font-size: 14px;
-    transform: translate(10%, 0);
     color #333
 
     .time {
@@ -204,8 +217,11 @@ export default {
 }
 
 .item-box {
-    margin-top: 40px;
     position: relative;
+    border-top 2px solid #eee
+}
+.item-box:nth-child(1){
+  border-top 1px solid #eee
 }
 
 .btn-box {

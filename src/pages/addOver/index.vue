@@ -51,7 +51,7 @@
                 <button @click='vote(1)'>成功</button>
                 <button @click='vote(2)'>失败</button>
             </div>
-            <div class="watcher-result">
+            <div class="watcher-result" v-show="watcherResult">
                 您的投票结果是：<span>{{watcherResult}}</span>
             </div>
         </div>
@@ -84,11 +84,12 @@ export default {
     },
     onLoad(options){
         this.tid = options.tid;
-        this.userId = options.uid
+        this.userId = options.uid;
+        
     },
     onShow(){
         this.isWacther = false;
-        this.isSelf=false
+        this.isSelf=false;
     },
     mounted(){
         var self = wx.getStorageSync('userId');

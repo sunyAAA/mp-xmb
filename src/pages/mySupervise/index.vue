@@ -92,7 +92,7 @@ export default {
 
 <style lang="stylus" scoped>
 .my-target-page
-    margin-top 40px
+    margin-top 50px
 .no-result
     height 300px
     line-height 300px
