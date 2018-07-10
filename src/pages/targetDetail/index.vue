@@ -33,10 +33,7 @@
             </div>
         </div>
         <div>
-                <div>
                 <button class="addDaily" @click='addDaily'>心情日记</button>
-                <div class="addIcon"></div>
-                </div>
                 <div class="btn-group"  v-show="status == 2 && isSelf">
                     <button  @click="goOver">发起结束</button>
                     <button open-type="share" @click='share'>邀请好友成为我的监督人</button>
@@ -150,6 +147,7 @@ export default {
     border 1px solid #eee
     font-size 14px
     margin-top 20px
+    margin-bottom 40px
 .shareBtn
     width 80%
     margin 20px auto

@@ -33,7 +33,6 @@ export function showSucc(text, cb) {
 
 //  如果有过授权则自动获取用户信息  cb返回 userinfo 对象
 export function _login(cb) {
-
 	_loading('加载中...')
 	wx.hideTabBar()
 	wx.login({
