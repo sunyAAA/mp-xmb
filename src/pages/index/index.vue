@@ -59,21 +59,36 @@ export default {
     };
 	},
 	onLoad(options){
+		var tid = options.tid
 		if(options.share){
-			var tid = options.tid
 			setTimeout(()=>{
 				wx.navigateTo({
 					url:'../../pages/sharePage/main?tid='+tid
 				});
-			},800)
+			},1200)
+		}else if(options.over){
+			setTimeout(()=>{
+				wx.navigateTo({
+					url:'../../pages/addOver/main?tid='+tid
+				});
+			},1200)
 		}
 	},
-  mounted() {
+  onShow() {
+			this.targetName='暂无进行中的目标',
+			this.targetDayDown='',
+			this.watchName='暂无监督中的目标',
+			this.watchDayDown=''
+		if(this.isLogin){
+			
+			wx.showTabBar();
+			this.getIndexDate()
+			return
+		}
     _login(res => {
       if (res) {
         this.isLogin = true;
         this.userInfo = res;
-        this.score = 66;
 				wx.showTabBar();
 				this.getIndexDate()
       }
@@ -88,7 +103,6 @@ export default {
           this.isLogin = true;
           this.userInfo = res;
           wx.setStorageSync("userInfo", res);
-          this.score = 66;
 					wx.showTabBar();
 					this.getIndexDate()
         }
@@ -99,11 +113,14 @@ export default {
 				if(res.data.code == 1){
 					let d = res.data.data[0]
 					if(!d){
+							this.targetName='暂无进行中的目标',
+							this.targetDayDown='';
+
 						return
 					}
 					this.dayDown = getLeftDays(d.beginTime);
 					var per = (new Date().getTime() - d.beginTime)/(d.endTime - d.beginTime) 
-					this.score = parseInt(per)>0?parseInt(per):0
+					this.score = parseInt(per*100)>0?parseInt(per*100):0
 					this.targetName = d.name;
 					this.targetDayDown ="倒计时："+ getRightDays(d.endTime)+"天";
 				}
@@ -112,10 +129,12 @@ export default {
 				if(res.data.code == 1){
 					let d = res.data.data[0]
 					if(!d){
+							this.watchName='暂无监督中的目标',
+							this.watchDayDown='';
 						return
 					}
 					this.watchName = d.name;
-					this.watchDayDown ="倒计时："+ getLeftDays(d.beginTime)+"天";
+					this.watchDayDown ="倒计时："+ getRightDays(d.endTime)+"天";
 				}
 			})
 		},

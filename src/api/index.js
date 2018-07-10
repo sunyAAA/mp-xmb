@@ -38,11 +38,11 @@ export function getTargetDetail(tid){
     return fly.get('/api/userTarget/getTargetById?targetId='+tid)
 }
 
-export function getDaelyByTid(tid,pageSize,pageNum){
+export function getDailyByTid(tid,pageSize,pageNum){
     return fly.get('/api/userTargetLog/getMyTargetLog',qs.stringify({targetId:tid,pageNum,pageSize}))
 }
 
-export function addNewDaely(params){
+export function addNewDaily(params){
     return fly.post('/api/userTargetLog/addTargetLog',qs.stringify(params))
 }
 
@@ -66,6 +66,6 @@ export function voteTarget(params){
     return fly.post('/api/userTarget/voteTarget',qs.stringify(params))
 }
 
-export function getMyWatch(status,pageSize,pageNum){
+export function getMyWatch(pageSize,pageNum,status){
     return fly.get('/api/userTarget/getHeTarget',qs.stringify({status,pageSize,pageNum}))
 }

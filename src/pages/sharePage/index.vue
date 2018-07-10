@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { _getU,getLeftDays,getRightDays,formatTime, showSucc } from '../../utils';
+import { _getU,getLeftDays,getRightDays,formatTime, showSucc,msg } from '../../utils';
 import zcard from '../../components/card'
 import loginBox from '../../components/loginBox'
 import {getTargetDetail,joinTarget} from '../../api'
@@ -61,6 +61,8 @@ export default {
                           delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
                         });
                     },800)
+                }else{
+                    msg(d.msg)
                 }
             })
         },

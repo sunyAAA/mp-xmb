@@ -31,7 +31,12 @@ export default {
 .tab
     display  flex
     align-items center
-    padding 0 50px
+    margin 0 12px 
+    position fixed
+    top 0 
+    width 350px
+    z-index 999
+    background #fff
     &>div
         flex 1
         text-align center

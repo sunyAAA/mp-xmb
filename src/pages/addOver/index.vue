@@ -7,6 +7,7 @@
             <p>{{userName}}</p>
         </div>
         <div class="blank"></div>
+        <scard  :data='data'></scard>
         <div v-if='isSelf'>
             <div class="overTk self">
                 <div class="over-head">
@@ -18,37 +19,40 @@
                 </div>
                 <div class="choose-img-box">
                     <div class="img-box" v-for="(item,index) in renderList" :key="index">
-                        <img :src="item" alt="">
+                        <img :src="oss + item" alt="">
                     </div>
                 </div>
                 <div class="icon-box" @click='upLoad'>
                     <img src="../../static/icon/icon/dptp3x.png" alt="">
                 </div>
             </div>
-            <div class="bottom-btn">
+            <div class="btn-box">
                 <button @click='save'>保存凭证</button>
-                <button class="add-btn">向好友发起结束</button>
+                <button v-show='active' open-type='share' class="add-btn" @click="sendOver">向好友发起结束</button>
             </div>
         </div>
         <div v-else>
             <div class="overTk over">
                 <div class="over-head">
                     <div>结束凭证</div>
-                    <div class="button-group">
-                        <button :class="{active: overActive==1}" @click="changeStatus(1)">成功</button>
-                        <button :class="{active: overActive==0}" @click="changeStatus(0)">失败</button>
+                    <div class="button-group" v-show='isWacther'>
+                        <button :class="{active: overActive==1}" >成功</button>
+                        <button :class="{active: overActive==0}" >失败</button>
                     </div>
                 </div>
                 <div class="choose-img-box">
-                    <div class="img-box">
-                        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1530181353793&di=3e8c04b2be23fcc5847ccfb7c276a4e7&imgtype=0&src=http%3A%2F%2Fimage.tianjimedia.com%2FuploadImages%2F2014%2F064%2F21739CV5LP64.jpg" alt="">
+                    <div class="img-box" v-for="(item,index) in renderList" :key="index">
+                        <img :src="oss + item" alt="">
                     </div>
                 </div>
             </div>
             <p class="friends-desc">你的好友好发布了结束的小目标，快来看看是否完成了小目标吧。</p>
-            <div  class="btn-group">
+            <div  class="btn-box" v-show='!watcherResult'>
                 <button @click='vote(1)'>成功</button>
                 <button @click='vote(2)'>失败</button>
+            </div>
+            <div class="watcher-result" v-show="watcherResult">
+                您的投票结果是：<span>{{watcherResult}}</span>
             </div>
         </div>
 
@@ -57,11 +61,12 @@
 </template>
 
 <script>
-import { _getU,upImgs, showSucc } from '../../utils';
+import { _getU,upImgs, showSucc,strToArray,msg } from '../../utils';
 import {getTargetDetail,saveTargetStatus,voteTarget} from '../../api'
-import zcard from '../../components/card'
+import dcard from '../../components/card'
+const shareBg = require('../../../static/shareBg.jpg')
 export default {
-    components:{zcard},
+    components:{dcard},
     data(){
         return{
             headUrl:'',
@@ -70,21 +75,40 @@ export default {
             overActive:1,
             loginType:2,
             imgList:[],
-            isSelf:false
+            isSelf:false,
+            oss:this.$oss,
+            isWacther:false,
+            watcherResult:null,
+            data:null
         }
     },
     onLoad(options){
         this.tid = options.tid;
-        this.userId = options.uid
+        this.userId = options.uid;
+        
+    },
+    onShow(){
+        this.isWacther = false;
+        this.isSelf=false;
     },
     mounted(){
         var self = wx.getStorageSync('userId');
         if(self == this.userId){this.isSelf=true}
         getTargetDetail(this.tid).then(res=>{
             var d = res.data
-            if(d.code == 1){
+            this.imgList = strToArray(d.data.images)
+            if(d.code == 1 ){
+                this.data = d.data
                 this.headUrl = d.data.avatar;
                 this.userName = d.data.name
+                this.active = d.data.sucStr == '成功'?1:0;
+            }
+            for(var item of d.data.relationList){
+                if(item.userId == self){
+                    this.isWacther = true
+                    this.watcherResult = item.targetResult?item.targetResult ==1 ? '成功':'失败':null
+                    return
+                }
             }
         })
     },
@@ -101,6 +125,7 @@ export default {
             upImgs(2,this.imgList)
         },
         save(){
+            if(this.active === null){msg('请填写自我评价');return}
             var params={
                 targetId:this.tid,
                 images:this.renderList.join(','),
@@ -116,21 +141,28 @@ export default {
         vote(status){
             var params = {
                 targetId : this.tid,
-                status
+                status:status
             }
             voteTarget(params).then(res=>{
                 var d= res.data;
                 if(d.code == 1){
                     showSucc('投票成功');
                     setTimeout(()=>{
-                        wx.redirectTo({
-                            url: '../../pages/index/main'
-                            })
+                        wx.navigateBack({
+                          delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+                        });
                     },800)
                 }
             })
-        }
-    }
+        }  
+    },
+    onShareAppMessage: function() {
+        return {
+            title: '先定一个小目标，砥砺奋进一个亿',
+            path: "/pages/index/main?tid="+this.tid+"&over=1",
+            imageUrl:shareBg
+        };
+  }
 }
 </script>
 
@@ -183,7 +215,7 @@ export default {
         height 200px
     .img-box
         width 120px
-        height 140px
+        height 120px
         overflow hidden
         display inline-block
         margin 0 20px
@@ -202,13 +234,28 @@ export default {
 .friends-desc
     font-size 12px
     text-align center
-.bottom-btn
-    display  flex
-    padding 0 20px
-    button
-        flex 1
-        margin-right 10px
-        height 40px
-        line-height 40px
-        font-size 14px
+.btn-box {
+    padding: 20px 30px;
+
+    &>button {
+        display: inline-block;
+        width: 100px;
+        font-size: 14px;
+
+
+        &:nth-child(2) {
+            float: right;
+        }
+        &:nth-child(1) {
+            background #479EF8
+            color #fff
+        }
+    }
+}
+.watcher-result
+    height 100px
+    line-height 100px
+    text-align center
+    font-size 16px
+
 </style>

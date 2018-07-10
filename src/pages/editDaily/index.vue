@@ -4,9 +4,9 @@
          <div class="img-box">
              <div class="show-box">
                   <img v-for="(item,index) in renderUrl"  :key="index"
-                     class='item' :src="item" alt="">
+                     class='item' :src="oss+item" alt="">
              </div>
-            <div class="icon-box" @click.stop='upLoadImg'>
+            <div class="icon-box-i" @click.stop='upLoadImg'>
                 <img src="../../static/icon/icon/dptp3x.png" alt="">
             </div>
          </div>
@@ -20,16 +20,19 @@
 
 <script>
 import {upImgs, showSucc,dateForm} from '../../utils'
-import {addNewDaely} from '../../api'
+import {addNewDaily} from '../../api'
 export default {
     data(){
         return{
             imgUrl:[],
-            content:''
+            content:'',
+            oss:this.$oss
         }
     },
     onLoad(options){
         this.tid = options.tid;
+        this.content = '';
+        this.imgUrl=[];
     },
     computed:{
         renderUrl(){
@@ -47,7 +50,7 @@ export default {
                 images:this.renderUrl.join(',')
             }
             if(!this.content){msg('日记内容不得为空');return}
-            addNewDaely(params).then(res=>{
+            addNewDaily(params).then(res=>{
                 if(res.data.code == 1){
                     showSucc('发布成功');
                     setTimeout(()=>{
@@ -57,6 +60,11 @@ export default {
                     },800)
                 }
             })
+        },
+        cencel(){
+            wx.navigateBack({
+                delta: 1 //返回的页面数，如果 delta 大于现有页面数，则返回到首页,
+            });
         }
     }
 }
@@ -76,15 +84,18 @@ export default {
         margin 0 20px
         margin-top 20px
         border 1px solid #eee
-        .icon-box
+        .icon-box-i
             position absolute
             bottom 10px
             right 10px
             z-index 999 class='item'
+            img
+                width 50px
+                height 50px
         img.item
-            width 100px
-            height 120px
-            object-fit cover
+            width 90px
+            height 90px
+            object-fit contain
             margin-right 10px
             margin-left 10px
             margin-top 20px
@@ -96,6 +107,8 @@ export default {
         width 100px
         font-size 14px
         &:nth-child(2)
-            float right 
+            float right
+            background  #479ef8
+            color #fff
 
 </style>

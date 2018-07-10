@@ -4,7 +4,7 @@
                 <img :src="renderData.url" alt="">
             </div>
             <div class="desc">
-                <h2>{{renderData.name}}</h2>
+                <h2>{{renderData.nickname}}</h2>
                 <p>已坚持{{renderData.hasDay}}天</p>
             </div>
             <div class="time">
@@ -39,7 +39,8 @@ export default {
                 name : this.data.name,
                 hasDay: getLeftDays(this.data.beginTime),
                 leftDay:getRightDays(this.data.endTime),
-                url:this.data.avatar
+                url:this.data.avatar,
+                nickname:this.data.user?this.data.user.nickname:''
             }
         }
     },
