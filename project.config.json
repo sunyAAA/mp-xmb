@@ -9,7 +9,7 @@
 	},
 	"miniprogramRoot": "./dist/",
 	"compileType": "miniprogram",
-	"appid": "wxb12e87be28f1821c",
+	"appid": "touristappid",
 	"projectname": "xmb",
 	"condition": {
 		"search": {
