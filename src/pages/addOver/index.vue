@@ -87,7 +87,7 @@ export default {
         this.userId = options.uid;
         
     },
-    onShow(){
+    onUnload(){
         this.isWacther = false;
         this.isSelf=false;
     },
@@ -252,6 +252,14 @@ export default {
         }
     }
 }
+.icon-box-i
+    position absolute
+    bottom 10px
+    right 10px
+    overflow hidden
+    img
+        width 50px
+        height 50px
 .watcher-result
     height 100px
     line-height 100px

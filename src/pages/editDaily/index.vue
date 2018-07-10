@@ -88,7 +88,7 @@ export default {
             position absolute
             bottom 10px
             right 10px
-            z-index 999 class='item'
+            overflow hidden
             img
                 width 50px
                 height 50px

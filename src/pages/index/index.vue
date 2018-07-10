@@ -58,7 +58,7 @@ export default {
 			watchDayDown:''
     };
 	},
-	onLoad(options){
+	onLoad(options){  // 获取url QUERY
 		var tid = options.tid
 		if(options.share){
 			setTimeout(()=>{
@@ -74,7 +74,7 @@ export default {
 			},1200)
 		}
 	},
-  onShow() {
+  onUnload() {  // 清空数据
 			this.targetName='暂无进行中的目标',
 			this.targetDayDown='',
 			this.watchName='暂无监督中的目标',
@@ -85,7 +85,9 @@ export default {
 			this.getIndexDate()
 			return
 		}
-    _login(res => {
+	},
+	mounted(){
+		   _login(res => {
       if (res) {
         this.isLogin = true;
         this.userInfo = res;
@@ -93,7 +95,7 @@ export default {
 				this.getIndexDate()
       }
     });
-  },
+	},
   methods: {
     getUserInfo(e) {
       _loading("加载中...");
