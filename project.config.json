@@ -9,8 +9,8 @@
 	},
 	"miniprogramRoot": "./dist/",
 	"compileType": "miniprogram",
-	"appid": "wxb12e87be28f1821c",
-	"projectname": "xmb",
+	"appid": "wx9e69b196c07ec64f",
+	"projectname": "%E5%AE%9A%E4%B8%AA%E5%B0%8F%E7%9B%AE%E6%A0%87",
 	"condition": {
 		"search": {
 			"current": -1,
