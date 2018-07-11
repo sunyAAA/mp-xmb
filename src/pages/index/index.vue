@@ -41,61 +41,63 @@ import {
   _getUserInfo,
   _loading,
   _getU,
-	loginByUser,
-	getRightDays,getLeftDays
+  loginByUser,
+  getRightDays,
+  getLeftDays
 } from "../../utils/index.js";
-import { loginByCode,getMytarget,getHetarget } from "../../api";
+import { loginByCode, getMytarget, getHetarget } from "../../api";
 export default {
   components: { progressArc },
   data() {
     return {
       isLogin: false,
       score: 0,
-			dayDown:0,
-			targetName:'暂无进行中的目标',
-			targetDayDown:'',
-			watchName:'暂无监督中的目标',
-			watchDayDown:''
+      dayDown: 0,
+      targetName: "暂无进行中的目标",
+      targetDayDown: "",
+      watchName: "暂无监督中的目标",
+      watchDayDown: ""
     };
-	},
-	onLoad(options){  // 获取url QUERY
-		var tid = options.tid
-		if(options.share){
-			setTimeout(()=>{
-				wx.navigateTo({
-					url:'../../pages/sharePage/main?tid='+tid
-				});
-			},1200)
-		}else if(options.over){
-			setTimeout(()=>{
-				wx.navigateTo({
-					url:'../../pages/addOver/main?tid='+tid
-				});
-			},1200)
-		}
-	},
-  onUnload() {  // 清空数据
-			this.targetName='暂无进行中的目标',
-			this.targetDayDown='',
-			this.watchName='暂无监督中的目标',
-			this.watchDayDown=''
-		if(this.isLogin){
-			
-			wx.showTabBar();
-			this.getIndexDate()
-			return
-		}
-	},
-	mounted(){
-		   _login(res => {
+  },
+  onLoad(options) {
+    // 获取url QUERY
+    var tid = options.tid;
+    if (options.share) {
+      setTimeout(() => {
+        wx.navigateTo({
+          url: "../../pages/sharePage/main?tid=" + tid
+        });
+      }, 1200);
+    } else if (options.over) {
+      setTimeout(() => {
+        wx.navigateTo({
+          url: "../../pages/addOver/main?tid=" + tid
+        });
+      }, 1200);
+    }
+  },
+  onUnload() {
+    // 清空数据
+    (this.targetName = "暂无进行中的目标"),
+      (this.targetDayDown = ""),
+      (this.watchName = "暂无监督中的目标"),
+      (this.watchDayDown = "");
+    if (this.isLogin) {
+      wx.showTabBar();
+      this.getIndexDate();
+      return;
+    }
+  },
+  mounted() {
+    _login(res => {
       if (res) {
         this.isLogin = true;
         this.userInfo = res;
-				wx.showTabBar();
-				this.getIndexDate()
+        wx.showTabBar();
+        this.getIndexDate();
       }
     });
-	},
+  },
   methods: {
     getUserInfo(e) {
       _loading("加载中...");
@@ -105,41 +107,41 @@ export default {
           this.isLogin = true;
           this.userInfo = res;
           wx.setStorageSync("userInfo", res);
-					wx.showTabBar();
-					this.getIndexDate()
+          wx.showTabBar();
+          this.getIndexDate();
         }
       });
-		},
-		getIndexDate(){
-			getMytarget(1,1).then(res=>{
-				if(res.data.code == 1){
-					let d = res.data.data[0]
-					if(!d){
-							this.targetName='暂无进行中的目标',
-							this.targetDayDown='';
+    },
+    getIndexDate() {
+      getMytarget(1, 1).then(res => {
+        if (res.data.code == 1) {
+          let d = res.data.data[0];
+          if (!d) {
+            (this.targetName = "暂无进行中的目标"), (this.targetDayDown = "");
 
-						return
-					}
-					this.dayDown = getLeftDays(d.beginTime);
-					var per = (new Date().getTime() - d.beginTime)/(d.endTime - d.beginTime) 
-					this.score = parseInt(per*100)>0?parseInt(per*100):0
-					this.targetName = d.name;
-					this.targetDayDown ="倒计时："+ getRightDays(d.endTime)+"天";
-				}
-			})
-			getHetarget(1,1).then(res=>{
-				if(res.data.code == 1){
-					let d = res.data.data[0]
-					if(!d){
-							this.watchName='暂无监督中的目标',
-							this.watchDayDown='';
-						return
-					}
-					this.watchName = d.name;
-					this.watchDayDown ="倒计时："+ getRightDays(d.endTime)+"天";
-				}
-			})
-		},
+            return;
+          }
+          this.dayDown = getLeftDays(d.beginTime);
+          var per =
+            (new Date().getTime() - d.beginTime) / (d.endTime - d.beginTime);
+          var s = parseInt(per * 100) > 0 ? parseInt(per * 100) : 0;
+          this.score = s > 100 ? 100 : this.score;
+          this.targetName = d.name;
+          this.targetDayDown = "倒计时：" + getRightDays(d.endTime) + "天";
+        }
+      });
+      getHetarget(1, 1).then(res => {
+        if (res.data.code == 1) {
+          let d = res.data.data[0];
+          if (!d) {
+            (this.watchName = "暂无监督中的目标"), (this.watchDayDown = "");
+            return;
+          }
+          this.watchName = d.name;
+          this.watchDayDown = "倒计时：" + getRightDays(d.endTime) + "天";
+        }
+      });
+    },
     goAddTarget() {
       if (this.isLogin) {
         wx.navigateTo({ url: "../../pages/addTarget/main" });

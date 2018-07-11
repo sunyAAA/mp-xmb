@@ -68,7 +68,7 @@ export function _login(cb) {
 								_loading()
 								wx.showTabBar()
 								return cb && cb(res.userInfo, null);
-							}else{
+							} else {
 								_loading()
 							}
 						}).catch(err => {
@@ -111,7 +111,7 @@ export function loginByUser(userInfo, cb) {
 					_loading()
 					wx.showTabBar()
 					return cb && cb(userInfo, null);
-				}else{
+				} else {
 					_loading()
 				}
 			}).catch((err) => {
@@ -143,7 +143,7 @@ export function _getU() {
 }
 
 
-export function upImgs(num,result) {  // num:上传的数量   result:接受返回文件名的数组
+export function upImgs(num, result) {  // num:上传的数量   result:接受返回文件名的数组
 	// return new Promise()
 	wx.chooseImage({
 		count: num, //最多可以选择的图片张数,    
@@ -156,27 +156,26 @@ export function upImgs(num,result) {  // num:上传的数量   result:接受返�
 				url: config.host + '/api/imgupload/getImgPolicy',  // 签名
 				success: oss => {
 					_loading('正在上传')
-					for(var i =0 ; i <num;i++){
+					for (var i = 0; i < num; i++) {
 						var item = tempFilePaths[i]
 						wx.uploadFile({
 							url: config.host + '/api/imgupload/imgUpload',   //上传
-							filePath: item, 
-							name: 'upfile', 
-							formData:{
-								name:item,
-								policy:res.policy,
-								signature:res.signature,
-								OSSAccessKeyId:res.accessid
+							filePath: item,
+							name: 'upfile',
+							formData: {
+								name: item,
+								policy: res.policy,
+								signature: res.signature,
+								OSSAccessKeyId: res.accessid
 							},
 							success: res => {
-								result.push('/'+ JSON.parse(res.data).data);
-								if(i == num){_loading()}
+								result.push('/' + JSON.parse(res.data).data);
+								if (i == num) { _loading() }
 							}
 						});
 					}
-
 				},
-			  });
+			});
 		},
 	});
 }
@@ -194,22 +193,22 @@ export function msg(text, cb) {
 	})
 }
 
-export function getLeftDays(begin){
+export function getLeftDays(begin) {
 	var now = new Date().getTime();
-	var result =  Math.floor((now-begin)/3600/24/1000);
-	return result>0?result:0
+	var result = Math.floor((now - begin) / 3600 / 24 / 1000);
+	return result > 0 ? result : 0
 }
-export function getRightDays(end){
+export function getRightDays(end) {
 	var now = new Date().getTime();
-	var result =  Math.floor((end-now)/3600/24/1000);
-	return result>0?result:0
+	var result = Math.floor((end - now) / 3600 / 24 / 1000);
+	return result > 0 ? result : 0
 }
 
-export function fromartTargetDate(begin,end){
-	return dateForm(begin,'Y-m-d') + " 至 " +dateForm(end,'Y-m-d')
+export function fromartTargetDate(begin, end) {
+	return dateForm(begin, 'Y-m-d') + " 至 " + dateForm(end, 'Y-m-d')
 }
 
-export function dateForm (timestamp, formats) {
+export function dateForm(timestamp, formats) {
 	// formats格式包括
 	// 1. Y-m-d
 	// 2. Y-m-d H:i:s
@@ -246,21 +245,21 @@ export function dateForm (timestamp, formats) {
 	});
 }
 
-export function showModel(title){
-	return new Promise((resolve,reject)=>{
+export function showModel(title) {
+	return new Promise((resolve, reject) => {
 		wx.showModal({
 			title: title,
-			success: function(res) {
-			  if (res.confirm) {
-				resolve(true)
-			  } else if (res.cancel) {
-				resolve(null)
-			  }
+			success: function (res) {
+				if (res.confirm) {
+					resolve(true)
+				} else if (res.cancel) {
+					resolve(null)
+				}
 			}
-		  })
+		})
 	})
 }
 
-export function strToArray(str){
-	return !str?[]:str.indexOf(',')>0? str.split(','):[str]
+export function strToArray(str) {
+	return !str ? [] : str.indexOf(',') > 0 ? str.split(',') : [str]
 }
