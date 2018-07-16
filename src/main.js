@@ -40,6 +40,12 @@ export default {
           "iconPath": "static/tab/watch.png",
           "selectedIconPath": "static/tab/watchActive.png"
         },
+        {
+          "text": "我的",
+          "pagePath": "pages/userCenter/main",
+          "iconPath": "static/tab/watch.png",
+          "selectedIconPath": "static/tab/watchActive.png"
+        },
       ]
     }
   },
